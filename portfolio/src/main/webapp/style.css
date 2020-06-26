@@ -1,10 +1,80 @@
-
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 20%;
+  background-color: #f1f1f1;
+  height: 100%; /* Full height */
+  position: fixed; /* Make it stick, even on scroll */
+  overflow: auto; /* Enable scrolling if the sidenav has too much content */
+}
+li a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+/* Change the link color on hover */
+li a:hover {
+  background-color: #555;
+  color: white;
+}
 body {
-  color:white;
+  color:rgb(98, 98, 98);
   font-family: Arial;
   padding: 20px;
-  background: #C06C84 ;
+  background: white ;
 }
+.highlightme { background-color:#C06C84; }
+
+.typewriter {
+    font-family: Courier, monospace;
+	display: inline-block;
+}
+
+.typewriter-text {
+    display: inline-block;
+  	overflow: hidden;
+  	letter-spacing: 2px;
+ 	animation: typing 5s steps(30, end), blink .75s step-end infinite;
+    white-space: nowrap;
+    font-size: 30px;
+    font-weight: 700;
+    border-right: 4px solid  #F8B195 ;
+    box-sizing: border-box;
+}
+
+@keyframes typing {
+    from { 
+        width: 0% 
+    }
+    to { 
+        width: 100% 
+    }
+}
+
+@keyframes blink {
+    from, to { 
+        border-color: transparent 
+    }
+    50% { 
+        border-color: #F8B195 ; 
+    }
+}
+
+.circ {
+    position:relative;
+    width:500px;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.circ img {
+    width: 100%;
+    height: auto;
+}
+
+
 
 pic {
   max-width: 100%;
@@ -14,7 +84,9 @@ pic {
 h1 { 
     text-shadow: 1px 1px 1px #ccc;
 }
-
+h2 {
+    color:white
+}
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Corben', Georgia, Times, serif;
 }
@@ -33,23 +105,15 @@ p, div {
 }
 /* unvisited */
 a:link {
-  color: red;
+  color: white;
 }
 
-/* visited  */
-a:visited {
-  color: green;
-}
 
 /* mouse over */
 a:hover {
-  color: hotpink;
+  color: #F8B195 ;
 }
 
-/* selected */
-a:active {
-  color: blue;
-}
 
 .links {
     display: inline-block;
@@ -58,7 +122,7 @@ a:active {
     text-align: center;
     text-decoration: none;
     color: #ffffff;
-    background-color: #F67280;
+    background-color:  #6C5B7B ;
     border-radius: 6px;
     outline: none;
 }
