@@ -1,3 +1,27 @@
+
+body {
+  color:white;
+  font-family: Arial;
+  padding: 20px;
+  background: #C06C84 ;
+}
+
+pic {
+  max-width: 100%;
+  height: auto;
+}
+
+h1 { 
+    text-shadow: 1px 1px 1px #ccc;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Corben', Georgia, Times, serif;
+}
+
+p, div {
+    font-family: 'Nobile', Helvetica, Arial, sans-serif;
+}
 #content {
   margin-left: auto;
   margin-right: auto;
@@ -6,4 +30,65 @@
 
 #greeting-container {
   margin-top: 20px;
+}
+/* unvisited */
+a:link {
+  color: red;
+}
+
+/* visited  */
+a:visited {
+  color: green;
+}
+
+/* mouse over */
+a:hover {
+  color: hotpink;
+}
+
+/* selected */
+a:active {
+  color: blue;
+}
+
+.links {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #F67280;
+    border-radius: 6px;
+    outline: none;
+}
+
+div.gallery {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 180px;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+.card {
+  background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+blog {
+    box-shadow: 0 0 1em 1em #ccc;
 }
