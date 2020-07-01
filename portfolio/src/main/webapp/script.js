@@ -15,6 +15,12 @@
 /**
  * Adds a random greeting to the page.
  */
+
+function getData() {
+  fetch('/data').then(response => response.text()).then((quote) => {
+    document.getElementById('data-container').innerText = quote;
+  });
+}
 function addRandomGreeting() {
   const greetings =
       ['"I need you to be careful and efficient. And remember: If I am harsh with you it is only because you are doing it wrong"-Monica', 
