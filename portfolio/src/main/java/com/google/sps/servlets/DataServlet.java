@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet { 
   
     // ArrayList<String> words = new ArrayList<String>();
-    Entity taskEntity = new Entity("Comms");
+    // Entity taskEntity = new Entity("Comms");
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -44,14 +44,13 @@ public class DataServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String comment = getParameter(request, "comment-input", "");
         response.setContentType("text/html;");
-        response.getWriter().println(comment);
         // words.add(comment);
-        // Entity taskEntity = new Entity("Comms");
-        taskEntity.setProperty("comment", comment);
 
+        Entity taskEntity = new Entity("Comms");
+        taskEntity.setProperty("comment", comment);
+        
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         datastore.put(taskEntity);
-
         response.sendRedirect("/index.html");
     }
 
