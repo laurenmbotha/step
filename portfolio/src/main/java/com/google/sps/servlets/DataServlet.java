@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 package com.google.sps.servlets;
+import java.util.Arrays;
 import java.util.*;
 import java.io.IOException;
 import com.google.gson.Gson;
@@ -23,19 +25,32 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
-public class DataServlet extends HttpServlet {
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // response.setContentType("application/json;");
-    // response.getWriter().println("Hello Lauren-Megan!");
+public class DataServlet extends HttpServlet { 
+  
     ArrayList<String> words = new ArrayList<String>();
-       words.add("Wow your page is great!");
-       words.add("Crazy page!");
-       words.add("Cool page!");
-    Gson gson = new Gson();
-    String json = gson.toJson(words);
-    response.setContentType("application/json;");
-    response.getWriter().println(json);
-  }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Gson gson = new Gson();
+        String json = gson.toJson(words);
+        response.setContentType("application/json;");
+        response.getWriter().println(json);
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String comment = getParameter(request, "comment-input", "");
+        response.setContentType("text/html;");
+        response.getWriter().println(comment);
+        words.add(comment);
+        response.sendRedirect("index.html");
+    }
+
+    private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+        String value = request.getParameter(name);
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
+    }
 }
 

@@ -20,7 +20,13 @@ function getData() {
   fetch('/data').then(response => response.text()).then((quote) => {
     document.getElementById('data-container').innerText = quote;
   });
+    fetch('/data')  // sends a request to /my-data-url
+    .then(response => response.json()) // parses the response as JSON
+    .then((words) => { // now we can reference the fields in myObject!
+    console.log(words);
+});
 }
+
 function addRandomGreeting() {
   const greetings =
       ['"I need you to be careful and efficient. And remember: If I am harsh with you it is only because you are doing it wrong"-Monica', 
