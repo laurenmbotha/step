@@ -14,6 +14,9 @@
 
 
 package com.google.sps.servlets;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import java.util.Arrays;
 import java.util.*;
 import java.io.IOException;
@@ -27,22 +30,28 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet { 
   
-    ArrayList<String> words = new ArrayList<String>();
+    // ArrayList<String> words = new ArrayList<String>();
+    // Entity taskEntity = new Entity("Comms");
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Gson gson = new Gson();
-        String json = gson.toJson(words);
-        response.setContentType("application/json;");
-        response.getWriter().println(json);
+        // Gson gson = new Gson();
+        // String json = gson.toJson(words);
+        // response.setContentType("application/json;");
+        // response.getWriter().println(json);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String comment = getParameter(request, "comment-input", "");
         response.setContentType("text/html;");
-        response.getWriter().println(comment);
-        words.add(comment);
-        response.sendRedirect("index.html");
+        // words.add(comment);
+
+        Entity taskEntity = new Entity("Comms");
+        taskEntity.setProperty("comment", comment);
+        
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        datastore.put(taskEntity);
+        response.sendRedirect("/index.html");
     }
 
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
