@@ -14,36 +14,14 @@
 
 
 function getData() {
-    fetch('/login').then(response => response.text()).then((user) => {
-        let userStatus = JSON.parse(user);;
-        // if (user) {
-        //     // fetch('/comment').then(response => response.text()).then((quote) => {
-        //     // let dict = JSON.parse(quote);
-        //     // console.log(dict);
-        //     // for(let i = 0; i < dict.length; i++) {
-        //     //     let comment  = document.createElement("p")
-        //     //     comment.innerText = dict[i]["title"];
-        //     //     document.getElementById("data-container").appendChild(comment)
-        //     // }
-        //     // }); 
-        // }
-    }); 
-    // prints comment as html from javascript
     fetch('/comment').then(response => response.text()).then((quote) => {
         let dict = JSON.parse(quote);
         console.log(dict);
-        if (userStatus == true) {
-            for(let i = 0; i < dict.length; i++) {
-                let comment  = document.createElement("p");
-                comment.innerText = dict[i]["title"];
-                document.getElementById("data-container").appendChild(comment)
-             }
-        } else {
-            let state = document.createElement("p");
-            state.innerText = "You need to login!";
+        for(let i = 0; i < dict.length; i++) {
+            let comment  = document.createElement("p");
+            comment.innerText = dict[i]["title"];
+            document.getElementById("data-container").appendChild(comment)
         }
-       
   });
 }
-
     

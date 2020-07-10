@@ -1,3 +1,4 @@
+
 // Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,9 +12,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 package com.google.sps.servlets;
-
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
@@ -40,6 +39,7 @@ public class LogInServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
+
     UserService userService = UserServiceFactory.getUserService();
     boolean user = false;
     if (userService.isUserLoggedIn()) {
@@ -60,7 +60,6 @@ public class LogInServlet extends HttpServlet {
     }
     Gson gson = new Gson();
 
-    // response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(user));
   }
 }

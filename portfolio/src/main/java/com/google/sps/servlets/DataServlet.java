@@ -14,6 +14,8 @@
 
 
 package com.google.sps.servlets;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -30,33 +32,37 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/comment")
 public class DataServlet extends HttpServlet { 
-  
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Query query = new Query("Task").addSort("timestamp", SortDirection.DESCENDING);
-
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        PreparedQuery results = datastore.prepare(query);
 
         List<Task> jobs = new ArrayList<>();
-        for (Entity entity : results.asIterable()) {
+
+        UserService userService = UserServiceFactory.getUserService();
+
+        if (userService.isUserLoggedIn()) {
+          Query query = new Query("Task").addSort("timestamp", SortDirection.DESCENDING);
+
+          DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+          PreparedQuery results = datastore.prepare(query);
+
+          for (Entity entity : results.asIterable()) {
             long id = entity.getKey().getId();
             String title = (String) entity.getProperty("title");
             long timestamp = (long) entity.getProperty("timestamp");
 
             Task task = new Task(id, title, timestamp);
             jobs.add(task);
+          }
         }
-
         Gson gson = new Gson();
 
         response.setContentType("application/json;");
         response.getWriter().println(gson.toJson(jobs));
-   
+
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -64,15 +70,14 @@ public class DataServlet extends HttpServlet {
         long timestamp = System.currentTimeMillis();
 
         Entity taskEntity = new Entity("Task");
+
         taskEntity.setProperty("title", title);
         taskEntity.setProperty("timestamp", timestamp);
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         datastore.put(taskEntity);
-
         response.sendRedirect("/index.html");
     }
-
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
         if (value == null) {
@@ -81,4 +86,6 @@ public class DataServlet extends HttpServlet {
         return value;
     }
 }
+
+
 
