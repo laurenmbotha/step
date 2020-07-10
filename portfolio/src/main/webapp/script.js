@@ -14,16 +14,14 @@
 
 
 function getData() {
-    // prints comment as html from javascript
     fetch('/comment').then(response => response.text()).then((quote) => {
-    let dict = JSON.parse(quote);
-    console.log(dict);
-    for(let i = 0; i < dict.length; i++) {
-        let comment  = document.createElement("p")
-        comment.innerText = dict[i]["title"];
-        document.getElementById("data-container").appendChild(comment)
-    }
+        let dict = JSON.parse(quote);
+        console.log(dict);
+        for(let i = 0; i < dict.length; i++) {
+            let comment  = document.createElement("p");
+            comment.innerText = dict[i]["title"];
+            document.getElementById("data-container").appendChild(comment)
+        }
   });
 }
-
     
