@@ -78,7 +78,7 @@ public class DataServlet extends HttpServlet {
         String email = userService.getCurrentUser().getEmail();
         
         Entity taskEntity = new Entity("Task");
-        taskEntity.setProperty("id", email);
+        taskEntity.setProperty("author", email);
         taskEntity.setProperty("title", title);
         taskEntity.setProperty("timestamp", timestamp);
 
