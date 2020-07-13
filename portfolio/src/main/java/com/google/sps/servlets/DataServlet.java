@@ -81,7 +81,7 @@ public class DataServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String title = getParameter(request, "comment-input", "");
-
+        String imageUrl = getUploadedFileUrl(request, "image");
         long timestamp = System.currentTimeMillis();
         UserService userService = UserServiceFactory.getUserService();
         if (!userService.isUserLoggedIn()) {
@@ -89,7 +89,7 @@ public class DataServlet extends HttpServlet {
             return;
         }
         String email = userService.getCurrentUser().getEmail();
-        String imageUrl = getUploadedFileUrl(request, "image");
+        
         
         Entity taskEntity = new Entity("Task");
         taskEntity.setProperty("image",imageUrl);

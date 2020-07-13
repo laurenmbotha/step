@@ -15,13 +15,14 @@
 
 function getData() {
     fetch('/comment').then(response => response.text()).then((quote) => {
+        // issue parsing, unexpected token
         let dict = JSON.parse(quote);
         console.log(dict);
         for(let i = 0; i < dict.length; i++) {
             let comment  = document.createElement("p");
             comment.innerText = dict[i]["author"] + ": " +  dict[i]["title"];
             let img = document.createElement("img");
-            img.innerText = "src=" + dict[i]["image"];
+            img.innerText = "<a href=\"" + imageUrl + "\">";
             document.getElementById("data-container").appendChild(comment)
         }
   });

@@ -35,7 +35,7 @@ public class BlobstoreUploadUrlServlet extends HttpServlet {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     String uploadUrl = blobstoreService.createUploadUrl("/comment");
 
-    response.setContentType("text/html");
+    response.setContentType("application/json;");
     response.getWriter().println(uploadUrl);
   }
 }
