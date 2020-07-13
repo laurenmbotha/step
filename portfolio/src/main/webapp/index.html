@@ -10,7 +10,7 @@
     
   </head>
   <ul>
-    <a href="/login" class="log">Log In! </a>
+    <li><a href="/login" class="log">Log In! </a> </li>
     <li><a href="#aboutme">About Me</a></li>
     <li><a href="#proj">Projects</a></li>
     <li><a href="#adv">Adventures</a></li>
@@ -84,12 +84,29 @@
         <button onclick="getData()">See Comments!</button>
         <div id="data-container"></div>
     </div>
-    <form action="/comment" method="POST">
+    <!-- <body onload="fetchBlobstoreUrlAndShowForm()"> -->
+        <form form id="my-form" action="/comment" method="POST" enctype="multipart/form-data">
+            <p>Add a comment below to the page</p>
+            <textarea name="comment-input"> blah blah</textarea>
+            <br/><br/>
+            <p>Upload an image:</p>
+            <input type="file" name="image">
+            <br/><br/>
+            <input type="submit" />
+        </form>
+    <!-- </body> -->
+  <!-- <body onload="fetchBlobstoreUrlAndShowForm()">
+    <h1>Blobstore Fetch Example</h1>
+    <p>Type a message and click submit:</p>
 
-      <p>Add a comment below to the page</p>
-      <textarea name="comment-input"> blah blah</textarea>
+    <form id="my-form" class="hidden" method="POST" enctype="multipart/form-data">
+      <p>Type some text:</p>
+      <textarea name="message"></textarea>
+      <br/>
+      <p>Upload an image:</p>
+      <input type="file" name="image">
       <br/><br/>
-      <input type="submit" />
+      <button>Submit</button>
     </form>
-  </body>
+  </body> -->
 </html>
