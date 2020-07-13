@@ -19,7 +19,7 @@ function getData() {
         console.log(dict);
         for(let i = 0; i < dict.length; i++) {
             let comment  = document.createElement("p");
-            comment.innerText = dict[i]["title"];
+            comment.innerText = dict[i]["author"] + ": " +  dict[i]["title"];
             document.getElementById("data-container").appendChild(comment)
         }
   });

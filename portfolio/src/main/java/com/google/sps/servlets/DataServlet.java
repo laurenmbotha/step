@@ -51,10 +51,12 @@ public class DataServlet extends HttpServlet {
 
           for (Entity entity : results.asIterable()) {
             long id = entity.getKey().getId();
+            String author = userService.getCurrentUser().getEmail();
+            // String author = (String) entity.getProperty("author");
             String title = (String) entity.getProperty("title");
             long timestamp = (long) entity.getProperty("timestamp");
 
-            Task task = new Task(id, title, timestamp);
+            Task task = new Task(author, id, title, timestamp);
             jobs.add(task);
           }
         }
@@ -68,9 +70,15 @@ public class DataServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String title = getParameter(request, "comment-input", "");
         long timestamp = System.currentTimeMillis();
-
+        UserService userService = UserServiceFactory.getUserService();
+        if (!userService.isUserLoggedIn()) {
+            response.sendRedirect("/shoutbox");
+            return;
+        }
+        String email = userService.getCurrentUser().getEmail();
+        
         Entity taskEntity = new Entity("Task");
-
+        taskEntity.setProperty("author", email);
         taskEntity.setProperty("title", title);
         taskEntity.setProperty("timestamp", timestamp);
 
