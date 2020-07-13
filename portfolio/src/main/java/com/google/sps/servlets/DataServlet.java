@@ -12,8 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package com.google.sps.servlets;
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -26,7 +38,6 @@ import com.google.gson.Gson;
 import com.google.sps.data.Task;
 import java.util.Arrays;
 import java.util.*;
-import java.io.IOException;
 import com.google.gson.Gson;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -42,6 +53,7 @@ public class DataServlet extends HttpServlet {
         List<Task> jobs = new ArrayList<>();
 
         UserService userService = UserServiceFactory.getUserService();
+        
 
         if (userService.isUserLoggedIn()) {
           Query query = new Query("Task").addSort("timestamp", SortDirection.DESCENDING);
@@ -51,12 +63,12 @@ public class DataServlet extends HttpServlet {
 
           for (Entity entity : results.asIterable()) {
             long id = entity.getKey().getId();
+            String imageUrl = getUploadedFileUrl(request, "image");
             String author = userService.getCurrentUser().getEmail();
-            // String author = (String) entity.getProperty("author");
             String title = (String) entity.getProperty("title");
             long timestamp = (long) entity.getProperty("timestamp");
 
-            Task task = new Task(author, id, title, timestamp);
+            Task task = new Task(author,imageUrl, id, title, timestamp);
             jobs.add(task);
           }
         }
@@ -69,6 +81,7 @@ public class DataServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String title = getParameter(request, "comment-input", "");
+
         long timestamp = System.currentTimeMillis();
         UserService userService = UserServiceFactory.getUserService();
         if (!userService.isUserLoggedIn()) {
@@ -76,8 +89,10 @@ public class DataServlet extends HttpServlet {
             return;
         }
         String email = userService.getCurrentUser().getEmail();
+        String imageUrl = getUploadedFileUrl(request, "image");
         
         Entity taskEntity = new Entity("Task");
+        taskEntity.setProperty("image",imageUrl);
         taskEntity.setProperty("author", email);
         taskEntity.setProperty("title", title);
         taskEntity.setProperty("timestamp", timestamp);
@@ -93,7 +108,43 @@ public class DataServlet extends HttpServlet {
         }
         return value;
     }
+    private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get("image");
+
+    if (blobKeys == null || blobKeys.isEmpty()) {
+      return null;
+    }
+
+    BlobKey blobKey = blobKeys.get(0);
+
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+    if (blobInfo.getSize() == 0) {
+      blobstoreService.delete(blobKey);
+      return null;
+    }
+
+
+    // Use ImagesService to get a URL that points to the uploaded file.
+    ImagesService imagesService = ImagesServiceFactory.getImagesService();
+    ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
+
+    // To support running in Google Cloud Shell with AppEngine's devserver, we must use the relative
+    // path to the image, rather than the path returned by imagesService which contains a host.
+    try {
+      URL url = new URL(imagesService.getServingUrl(options));
+      return url.getPath();
+    } catch (MalformedURLException e) {
+      return imagesService.getServingUrl(options);
+    }
+  }
 }
+
+
+  
+ 
+
 
 
 

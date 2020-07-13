@@ -20,6 +20,8 @@ function getData() {
         for(let i = 0; i < dict.length; i++) {
             let comment  = document.createElement("p");
             comment.innerText = dict[i]["author"] + ": " +  dict[i]["title"];
+            let img = document.createElement("img");
+            img.innerText = "src=" + dict[i]["image"];
             document.getElementById("data-container").appendChild(comment)
         }
   });
