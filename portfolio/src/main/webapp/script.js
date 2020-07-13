@@ -22,8 +22,9 @@ function getData() {
             let comment  = document.createElement("p");
             comment.innerText = dict[i]["author"] + ": " +  dict[i]["title"];
             let img = document.createElement("img");
-            img.innerText = "<a href=\"" + imageUrl + "\">";
-            document.getElementById("data-container").appendChild(comment)
+            img.src = dict[i].image;
+            comment.appendChild(img);
+            document.getElementById("data-container").appendChild(comment);
         }
   });
 }
