@@ -63,7 +63,7 @@ public class DataServlet extends HttpServlet {
 
           for (Entity entity : results.asIterable()) {
             long id = entity.getKey().getId();
-            String imageUrl = getUploadedFileUrl(request, "image");
+            String imageUrl = (String) entity.getProperty("image");
             String author = userService.getCurrentUser().getEmail();
             String title = (String) entity.getProperty("title");
             long timestamp = (long) entity.getProperty("timestamp");
