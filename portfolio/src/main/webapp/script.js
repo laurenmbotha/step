@@ -15,7 +15,6 @@
 
 function getData() {
     fetch('/comment').then(response => response.text()).then((quote) => {
-        // issue parsing, unexpected token
         let dict = JSON.parse(quote);
         console.log(dict);
         for(let i = 0; i < dict.length; i++) {
@@ -23,7 +22,6 @@ function getData() {
             comment.innerText = dict[i]["author"] + ": " +  dict[i]["title"];
             let image = document.createElement("img");
             image.setAttribute("src", dict[i]["image"]);
-            // img.innerText = "<a href=\"" + imageUrl + "\">";
             document.getElementById("data-container").appendChild(comment);
             document.getElementById("data-container").appendChild(image);
         }

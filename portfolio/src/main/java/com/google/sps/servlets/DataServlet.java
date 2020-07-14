@@ -94,7 +94,7 @@ public class DataServlet extends HttpServlet {
         
         
         Entity taskEntity = new Entity("Task");
-        taskEntity.setProperty("image",imageUrl);
+        taskEntity.setProperty("image", imageUrl);
         taskEntity.setProperty("author", email);
         taskEntity.setProperty("title", title);
         taskEntity.setProperty("timestamp", timestamp);
