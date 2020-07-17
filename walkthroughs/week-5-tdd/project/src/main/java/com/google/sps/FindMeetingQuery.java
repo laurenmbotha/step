@@ -32,8 +32,7 @@ public final class FindMeetingQuery {
     long mrd = request.getDuration();
     //--------------pt 1: Filter out all the times when ppl are in events during request times
     List<TimeRange> step1 = new ArrayList<TimeRange>();
-    // List<TimeRange> prob_optional = new ArrayList<TimeRange>;
-    // List<TimeRange> prob_definite = new ArrayList<TimeRange>;
+    List<TimeRange> optional = new ArrayList<TimeRange>();
     int day = TimeRange.END_OF_DAY - TimeRange.START_OF_DAY;
     if (mrd < day) {
         for (Event cur_event : events) { 
@@ -42,9 +41,10 @@ public final class FindMeetingQuery {
                     step1.add(cur_event.getWhen());
                 }
             }
-            for (String person : request.getOptionalAttendees()) { 
-                if (cur_event.getAttendees().contains(person)) {
-                    step1.add(cur_event.getWhen());
+            for (String person1 : request.getOptionalAttendees()) { 
+                if (cur_event.getAttendees().contains(person1)) {
+                    System.out.println("ADDING OPTIONAL ATTENDEE______________");
+                    optional.add(cur_event.getWhen());
                 }
             }
 
@@ -53,6 +53,28 @@ public final class FindMeetingQuery {
         return step1;
     }
 
+    System.out.println("Step 1 = " + step1);
+
+    List<TimeRange> step2optional = new ArrayList<TimeRange>();
+    int counter4 = 0;
+    for(TimeRange event1 : optional) {
+        int counter6 = 0;
+        int testpassed = 0;
+        for(TimeRange event2 : optional) {
+            if(counter4 != counter6) {
+                if (event2.contains(event1) == false) {
+                    testpassed++;
+                }
+            }
+            counter6++;
+        }
+        if(testpassed == (optional.size() - 1)) { 
+            step2optional.add(event1);
+        }
+        counter4++; 
+    }
+
+   
 
 
     //--------------pt 2: Find all events that overlap and happen in same time frame
@@ -69,7 +91,7 @@ public final class FindMeetingQuery {
             }
             counter2++;
         }
-        if(testpassed == (events.size() - 1)) { 
+        if(testpassed == (step1.size() - 1)) { 
             step2.add(event1);
         }
         counter1++; 
@@ -78,10 +100,13 @@ public final class FindMeetingQuery {
 
     
     Collections.sort(step2,TimeRange.ORDER_BY_START);
+    Collections.sort(step2optional,TimeRange.ORDER_BY_START);
     
     //--------------pt 3: Use all busy times to create all free times 
     List<TimeRange> results = new ArrayList<TimeRange>();
     int diff = 0;
+    System.out.println("Step 2 is " + step2);
+    System.out.println("Step 2 optional is " +step2optional);
     if (step2.size() != 0 ) {
         for(int i = 0; i < step2.size(); i++) {
             if (i == 0 ) { 
@@ -105,9 +130,34 @@ public final class FindMeetingQuery {
                     results.add(TimeRange.fromStartEnd(step2.get(step2.size()-1).end(),TimeRange.END_OF_DAY,true));
         } 
         
+    } else if (step2.size() == 0 && step2optional.size() > 0){
+        for(int i = 0; i < step2optional.size(); i++) {
+            if (i == 0 ) { 
+                diff = step2optional.get(i).start() - TimeRange.START_OF_DAY;
+                if ((long)diff >= mrd){
+                    results.add(TimeRange.fromStartEnd(TimeRange.START_OF_DAY,step2optional.get(i).start(),false));
+                }
+
+            }
+
+            if (0 < i ) {
+                diff = step2optional.get(i).start() - step2optional.get(i-1).end();
+                if ((long)diff >= mrd) {
+                    results.add(TimeRange.fromStartEnd(step2optional.get(i-1).end(),step2optional.get(i).start(),false));
+                }
+            }
+    
+        }
+        diff = TimeRange.END_OF_DAY - step2optional.get(step2optional.size()-1).end();
+        if ((long)diff >= mrd){
+                    results.add(TimeRange.fromStartEnd(step2optional.get(step2optional.size()-1).end(),TimeRange.END_OF_DAY,true));
+        } 
     } else {
+        System.out.println("Entering weird edge case where we just print whole day");
         results.add(TimeRange.fromStartEnd(TimeRange.START_OF_DAY,TimeRange.END_OF_DAY,true));
     }
+ 
+
     return results;
   }
 }
