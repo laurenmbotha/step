@@ -18,12 +18,14 @@ package com.google.sps.data;
 public final class Task {
 
   private final String author;
+  private final String image;
   private final long id;
   private final String title;
   private final long timestamp;
 
-  public Task(String author, long id, String title, long timestamp) {
+  public Task(String author, String image, long id, String title, long timestamp) {
     this.author = author;
+    this.image = image;
     this.id = id;
     this.title = title;
     this.timestamp = timestamp;
