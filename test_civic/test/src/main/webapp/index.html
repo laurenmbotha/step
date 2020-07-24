@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Corben:bold" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nobile" rel="stylesheet" type="text/css">
+    <meta charset="UTF-8">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    
+  </head>
+
+    <body>
+        
+        <!-- <button onclick="getData()">See Polling Locations near you!</button> -->
+
+
+       <form form id="my-form" action="/comment" method="POST" enctype="multipart/form-data">
+            <p>Enter your address to find a polling location nearby</p>
+            <textarea name="address">1101 Example St. 
+NYC, New York 10102</textarea>
+            <br/><br/>
+            <!-- <p>Upload an image:</p>
+            <input type="file" name="image">
+            <br/><br/>
+            <!-- <button id="submit" onclick="getData()">Submit</button> -->
+            <!-- <input type="submit" /> -->
+        </form>
+        <button onclick="getData()">see polling locations</button>
+        <br/><br/>
+        <br/><br/>
+        <h2> Polling Locations </h2>
+        <div id="data-container"></div>
+        <p id="random"></p>
+
+        <h3>My Google Maps Demo</h3>
+        <div id="map"></div>
+        <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZwerlkm0gx8mVP0zpfQqeJZM3zGUUPiM&callback=initMap">
+        </script>
+    </body>
+</html>
