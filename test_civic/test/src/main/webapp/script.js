@@ -17,7 +17,8 @@ var latmap = 0;
 var lngmap = 0;
 var address = '';
 let addresses = [];
-var coordiantes = [];
+var coordinates = [];
+var places = [];
 
 function getData() {
     //fetches address from the form and displays nearby polling locations
@@ -31,61 +32,70 @@ function getData() {
             comment.innerText = "No polling locations in the same zipcode as your address";
             document.getElementById("random").appendChild(comment);
         } else {
-            let size = quote.pollingLocations.length;
-            if (size > 10) {
-                size = 10;
-            }
-            for(let i=0; i < size; i++) {
-                let br = document.createElement("br");
-                let br1 = document.createElement("br");
-                let comment  = document.createElement("p");
-                let line1  = document.createElement("p");
-                let line2  = document.createElement("p");
-                comment.innerText = quote.pollingLocations[i].address.locationName;
-                line1.innerText = quote.pollingLocations[i].address.line1;
-                line2.innerText = quote.pollingLocations[i].address.city +", " + quote.pollingLocations[i].address.state + " " + quote.pollingLocations[0].address.zip;
-                document.getElementById("random").appendChild(comment);
-                document.getElementById("random").appendChild(line1);
-                document.getElementById("random").appendChild(line2);
-                document.getElementById("random").appendChild(br);
-                document.getElementById("random").appendChild(br1);
-                addresses.push(quote.pollingLocations[i].address.line1 + " " + quote.pollingLocations[i].address.city +", " + quote.pollingLocations[i].address.state + " " + quote.pollingLocations[0].address.zip);
-            }
-            
+            addAddresses(quote);
+            // console.log(addresses);
+            buildCoordinates(addresses);
+            console.log(coordinates);
+            initMap();
+            makePlaces(coordinates);
+            console.log(places);
+            // makeMarkers(places);
+            initMap();
         }
-
      });
-    console.log(addresses);
-    console.log(addresses[0]);
-    getCoord('https://maps.googleapis.com/maps/api/geocode/json?address=' + "4145 CHOLLA DR LAS CRUCES, NM 88011" + '&key=AIzaSyAZwerlkm0gx8mVP0zpfQqeJZM3zGUUPiM');
-    //  for(let i=0; i < addresses; i++) {
-    //      getCoord('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(addresses[i]) + '&key=AIzaSyAZwerlkm0gx8mVP0zpfQqeJZM3zGUUPiM');
-    //  }
-    console.log("2");
-    //  getCoord('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(address.value) + '&key=AIzaSyAZwerlkm0gx8mVP0zpfQqeJZM3zGUUPiM');
-
-     //x  before, getData, create an array for addresses
-     //x dynamically add addressed as we display them
-     //create an matrix 
-     //call getCoordinate and in getCoordinate add each lat and lang as an array element in list of coordiantes
-     //go to initmap and loop through this list of lat and lang and dynamically add markers 
-     // call getCoor on every addresss, adding new lat and long as a dictionary element in an array
-     // after we have that data we can 
 
 }
 
+function addAddresses(pollingInfo) {
+    let size = pollingInfo.pollingLocations.length;
+    if (size > 10) {
+        size = 10;
+    }
+    for(let i=0; i < size; i++) {
+        let br = document.createElement("br");
+        let br1 = document.createElement("br");
+        let comment  = document.createElement("p");
+        let line1  = document.createElement("p");
+        let line2  = document.createElement("p");
+        comment.innerText = pollingInfo.pollingLocations[i].address.locationName;
+        line1.innerText = pollingInfo.pollingLocations[i].address.line1;
+        line2.innerText = pollingInfo.pollingLocations[i].address.city +", " + pollingInfo.pollingLocations[i].address.state + " " + pollingInfo.pollingLocations[0].address.zip;
+        document.getElementById("random").appendChild(comment);
+        document.getElementById("random").appendChild(line1);
+        document.getElementById("random").appendChild(line2);
+        document.getElementById("random").appendChild(br);
+        document.getElementById("random").appendChild(br1);
+        // console.log('appending to address:' + addresses.length);
+        addresses.push(pollingInfo.pollingLocations[i].address.line1 + " " + pollingInfo.pollingLocations[i].address.city +", " + pollingInfo.pollingLocations[i].address.state + " " + pollingInfo.pollingLocations[0].address.zip);
+    }
+            
+}
 
+function getHomeCoord(url){ //notes: build our lat long dictionary of all address
+    //fetches the lat and long of the individuals gps so we can feed to the maps API
+    fetch(url).then(response => response.json()).then((geo) => {
+        let homeLat = geo.results[0].geometry.location["lat"];
+        let homeLng = geo.results[0].geometry.location["lng"];
+        
+    });
+}
 
 function getCoord(url){ //notes: build our lat long dictionary of all address
     //fetches the lat and long of the individuals gps so we can feed to the maps API
     fetch(url).then(response => response.json()).then((geo) => {
         latmap = geo.results[0].geometry.location["lat"];
         lngmap = geo.results[0].geometry.location["lng"];
-        console.log("Lat:" + latmap + "Long: " + lngmap);
-        console.log([latmap,lngmap])
-        coordiantes.push([latmap,lngmap]);
+        coordinates.push({lat: latmap, lng: lngmap});
+
     });
 }
+
+function buildCoordinates(adds) {
+    for(let i=0; i < adds.length; i++) {
+         getCoord('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(adds[i]) + '&key=AIzaSyAZwerlkm0gx8mVP0zpfQqeJZM3zGUUPiM');
+     }
+}
+
 
 function initMap() {
     var uluru = {lat: latmap, lng: lngmap};
@@ -93,29 +103,35 @@ function initMap() {
     document.getElementById('map'), {zoom: 4, center: uluru});
     var marker = new google.maps.Marker({position: uluru, map: map});
 
-  
 }
 
-// window.addEventListener('load', (event) => {
-//     console.log('The page has fully loaded');
-//     fetchUser();
-//     addBlob();
-// });
-
-function fetchBlobstoreUrlAndShowForm() {
-  fetch('/blobstore-upload-url')
-      .then((response) => {
-        console.log(response);
-        return response.text();
-      })
-      .then((imageUploadUrl) => {
-        const messageForm = document.getElementById('my-form');
-        messageForm.action = imageUploadUrl;
-        // messageForm.classList.remove('hidden');
-      });
+function makePlaces(coords) {
+    for(let i=0; i < coords.length; i++) {
+        console.log("entering make places " + i );
+        var place = {lat: coords[0], lng: coords[1]};
+        places.push(place);
+        // console.log(places);
+    }
 }
+// function makeMarkers(plcs) {
+//     for(let i=0; i < plcs.length; i++) {
+//         console.log("entering make markers " + i );
+//         new google.maps.Marker({position: places[i], map: map});
+//     }
+// }
 
-//helper function to get id of element
-function id(text) {
-    return document.getElementById(text);
-}
+
+
+
+// function fetchBlobstoreUrlAndShowForm() {
+//   fetch('/blobstore-upload-url')
+//       .then((response) => {
+//         console.log(response);
+//         return response.text();
+//       })
+//       .then((imageUploadUrl) => {
+//         const messageForm = document.getElementById('my-form');
+//         messageForm.action = imageUploadUrl;
+//         // messageForm.classList.remove('hidden');
+//       });
+// }
